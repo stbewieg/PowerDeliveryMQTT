@@ -49,16 +49,17 @@ const byte mac[] PROGMEM = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
 // > Constants Stored in SRAM
 const char PDCTopicWild[] = "cube00/PDC/#";
+const char PDCTopic[] = "cube00/PDC";
 const char publishInit[] = "ON";
 const char willMsg[] = "OFF";
 
 
 
-
 // > Statics
-char PDCTopic[] = "cube00/PDC";
+#define NumberPosInTopic 14
+char PDCRPiTopic[] = "cube00/PDC/RPi0";
 EthernetClient client;
-Adafruit_MQTT_Client mqtt(&client, SERVER, SERVERPORT);//, USERNAME, USERNAME, KEY);
+Adafruit_MQTT_Client mqtt(&client, SERVER, SERVERPORT);  //, USERNAME, USERNAME, KEY);
 
 
 
@@ -92,11 +93,16 @@ void setup() {
   // configure MQTT
   mqtt.will(PDCTopic, willMsg, 0, 1);
   mqtt.subscribe(&PDCSubTopic);
-  //mqtt.setKeepAliveInterval((uint16_t)10);// second
+  mqtt.setKeepAliveInterval((uint16_t)10);  // 10 second
 
 
   //connect
   MQTT_connect();
+
+  for (char i = '0'; '7' > i; i++) {
+    PDCRPiTopic[NumberPosInTopic] = i;
+    mqtt.publish(PDCRPiTopic, willMsg, 0, 1);
+  }
 }
 
 
@@ -145,7 +151,9 @@ void MQTT_connect() {
     mqtt.disconnect();
     delay(5000);  // wait 5 seconds
   }
-  mqtt.publish(PDCTopic, publishInit, 0);
+
+  // Publish on Connoect
+  mqtt.publish(PDCTopic, publishInit, 0, 1);
 
   Serial.println(F("MQTT Connected!"));
 }
