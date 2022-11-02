@@ -1,0 +1,6 @@
+[submodule "UIPEthernet"]
+	path = UIPEthernet
+	url = https://github.com/stbewieg/UIPEthernet.git
+[submodule "Adafruit_MQTT_Library"]
+	path = Adafruit_MQTT_Library
+	url = https://github.com/stbewieg/Adafruit_MQTT_Library.git
